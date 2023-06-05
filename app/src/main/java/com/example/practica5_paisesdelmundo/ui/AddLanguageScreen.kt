@@ -2,11 +2,9 @@ package com.example.practica5_paisesdelmundo.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -42,34 +39,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.practica5_paisesdelmundo.R
-import com.example.practica5_paisesdelmundo.data.room.CityState
-import com.example.practica5_paisesdelmundo.data.room.events.CityEvent
-import com.example.practica5_paisesdelmundo.navegacion.Screen
+import com.example.practica5_paisesdelmundo.data.room.LanguageState
+import com.example.practica5_paisesdelmundo.data.room.events.LanguageEvent
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCityScreen(
+fun AddLanguageScreen(
     navController: NavController,
-    state: CityState,
-    onEvent: (CityEvent) -> Unit
+    state: LanguageState,
+    onEvent: (LanguageEvent) -> Unit
 ) {
-    Scaffold(topBar = { AddCityAppBar(navController) },
+    Scaffold(
+        topBar = { AddLanguageAppBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEvent(CityEvent.SaveCity)
+                    onEvent(LanguageEvent.SaveLanguage)
                     navController.popBackStack()
                 },
                 containerColor = MaterialTheme.colorScheme.secondary,
                 shape = CircleShape,
                 content = {
-                    Icon(Icons.Default.Add, contentDescription = "Add City")
+                    Icon(Icons.Default.Add, contentDescription = "Add Language")
                 },
                 modifier = Modifier.size(70.dp)
             )
-        },
-        content = {
+        }, content = {
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -80,7 +76,7 @@ fun AddCityScreen(
                     alpha = .1f,
                     contentScale = ContentScale.Crop
                 )
-                AddCityContent(navController, state, onEvent)
+                AddLanguageContent(navController, state, onEvent)
             }
 
         })
@@ -88,18 +84,18 @@ fun AddCityScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCityAppBar(navController: NavController) {
+fun AddLanguageAppBar(navController: NavController) {
     TopAppBar(
         title = {
             Text(
-                text = "Ciudades", color = Color.White
+                text = "Añadiendo país", color = Color.White
             )
         },
         navigationIcon = {
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
@@ -114,12 +110,11 @@ fun AddCityAppBar(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCityContent(
+fun AddLanguageContent(
     navController: NavController,
-    state: CityState,
-    onEvent: (CityEvent) -> Unit
+    state: LanguageState,
+    onEvent: (LanguageEvent) -> Unit
 ) {
-    val puntoTuristicoState = remember { mutableStateOf(TextFieldValue()) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -135,7 +130,7 @@ fun AddCityContent(
 
         ) {
             Text(
-                text = "Añadiendo Ciudad",
+                text = "Añadiendo lenguaje",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -145,9 +140,9 @@ fun AddCityContent(
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
 
                 TextField(
-                    value = state.cityName,
+                    value = state.languageName,
                     onValueChange = {
-                        onEvent(CityEvent.SetCityName(it))
+                        onEvent(LanguageEvent.SetLanguageName(it))
                         /*countryNameState.value = it*/
                     },
                     placeholder = {
@@ -158,68 +153,31 @@ fun AddCityContent(
                 )
 
                 TextField(
-                    value = state.disctrictName,
+                    value = state.isOfficial,
                     onValueChange = {
-                        onEvent(CityEvent.SetCityDistrict(it))
+                        onEvent(LanguageEvent.SetIsOfficial(it))
                         /*continentNameState.value = it*/
                     },
                     placeholder = {
-                        Text(text = "Distrito")
+                        Text(text = "¿Es oficial?")
                     },
                     shape = CircleShape,
                     modifier = Modifier.wrapContentWidth()
                 )
 
                 TextField(
-                    value = state.population,
-                    onValueChange = { onEvent(CityEvent.SetCityPopulation(it)) },
-                    placeholder = {
-                        Text(text = "Población")
+                    value = state.percentage,
+                    onValueChange = {
+                        onEvent(LanguageEvent.SetPercentage(it))
+                        /*continentNameState.value = it*/
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    placeholder = {
+                        Text(text = "Porcentaje")
+                    },
                     shape = CircleShape,
                     modifier = Modifier.wrapContentWidth()
                 )
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextField(
-                        value = puntoTuristicoState.value,
-                        onValueChange = { puntoTuristicoState.value = it },
-                        leadingIcon = {
-                            IconButton(onClick = { })
-                            {
-                                Icon(
-                                    Icons.Default.ArrowDropDown,
-                                    contentDescription = "Puntos turisticos List",
-                                    modifier = Modifier.size(15.dp),
-                                    tint = Color.Black
-                                )
-                            }
-                        },
-                        placeholder = {
-                            Text(text = "Punto Turístico")
-                        },
-                        shape = CircleShape,
-                        modifier = Modifier.wrapContentWidth()
-                    )
-                    IconButton(
-                        onClick = { navController.navigate(Screen.AddTouristicPoint.route) },
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(start = 8.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.tertiary,
-                                shape = CircleShape
-                            )
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Add Punto Turistico",
-                            modifier = Modifier.size(15.dp),
-                            tint = Color.White
-                        )
-                    }
-                }
             }
         }
     }

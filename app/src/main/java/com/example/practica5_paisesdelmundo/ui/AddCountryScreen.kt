@@ -215,7 +215,7 @@ fun AddCountryContent(
                         value = languageNameState.value,
                         onValueChange = { languageNameState.value = it },
                         leadingIcon = {
-                            IconButton(onClick = { /*TODO*/ })
+                            IconButton(onClick = { })
                             {
                                 Icon(
                                     Icons.Default.ArrowDropDown,
@@ -232,7 +232,7 @@ fun AddCountryContent(
                         modifier = Modifier.wrapContentWidth()
                     )
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { navController.navigate(Screen.AddLanguage.route) },
                         modifier = Modifier
                             .size(50.dp)
                             .padding(start = 8.dp)
