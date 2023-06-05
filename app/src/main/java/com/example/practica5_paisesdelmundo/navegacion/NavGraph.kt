@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.practica5_paisesdelmundo.data.room.CountryState
+import com.example.practica5_paisesdelmundo.data.room.events.CountryEvent
 import com.example.practica5_paisesdelmundo.ui.AddCityScreen
 import com.example.practica5_paisesdelmundo.ui.AddCountryScreen
 import com.example.practica5_paisesdelmundo.ui.CountriesScreen
@@ -11,7 +13,9 @@ import com.example.practica5_paisesdelmundo.ui.HomeScreen
 
 @Composable
 fun SetupNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    state: CountryState,
+    onEvent: (CountryEvent) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -26,13 +30,13 @@ fun SetupNavGraph(
         composable(
             route = Screen.Countries.route
         ) {
-            CountriesScreen(navController)
+            CountriesScreen(navController, state, onEvent)
         }
 
         composable(
             route = Screen.AddCountry.route
         ) {
-            AddCountryScreen(navController)
+            AddCountryScreen(navController, state, onEvent)
         }
 
         composable(

@@ -40,20 +40,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.practica5_paisesdelmundo.R
+import com.example.practica5_paisesdelmundo.data.room.CountryState
+import com.example.practica5_paisesdelmundo.data.room.events.CountryEvent
 import com.example.practica5_paisesdelmundo.navegacion.Screen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCountryScreen(
-    navController: NavController
+    navController: NavController,
+    state: CountryState,
+    onEvent: (CountryEvent) -> Unit
 ) {
     Scaffold(
         topBar = { AddCountryAppBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    //agrgar el pais a la base de datos
+                    onEvent(CountryEvent.SaveCountry)
                     navController.popBackStack()
                 },
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -74,7 +78,7 @@ fun AddCountryScreen(
                     alpha = .1f,
                     contentScale = ContentScale.Crop
                 )
-                AddCountryContent(navController)
+                AddCountryContent(navController, state, onEvent)
             }
 
         })
@@ -109,11 +113,11 @@ fun AddCountryAppBar(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCountryContent(
-    navController: NavController
+    navController: NavController,
+    state: CountryState,
+    onEvent: (CountryEvent) -> Unit
 ) {
 
-    val countryNameState = remember { mutableStateOf(TextFieldValue()) }
-    val continentNameState = remember { mutableStateOf(TextFieldValue()) }
     val cityNameState = remember { mutableStateOf(TextFieldValue()) }
     val languageNameState = remember { mutableStateOf(TextFieldValue()) }
 
@@ -141,8 +145,11 @@ fun AddCountryContent(
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
 
                 TextField(
-                    value = countryNameState.value,
-                    onValueChange = { countryNameState.value = it },
+                    value = state.countryName,
+                    onValueChange = {
+                        onEvent(CountryEvent.SetCountryName(it))
+                        /*countryNameState.value = it*/
+                    },
                     placeholder = {
                         Text(text = "Nombre")
                     },
@@ -151,8 +158,11 @@ fun AddCountryContent(
                 )
 
                 TextField(
-                    value = continentNameState.value,
-                    onValueChange = { continentNameState.value = it },
+                    value = state.countryContinent,
+                    onValueChange = {
+                        onEvent(CountryEvent.SetCountryContinent(it))
+                        /*continentNameState.value = it*/
+                    },
                     placeholder = {
                         Text(text = "Continente")
                     },

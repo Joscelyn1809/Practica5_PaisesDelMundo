@@ -3,21 +3,26 @@ package com.example.practica5_paisesdelmundo.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.practica5_paisesdelmundo.R
+import com.example.practica5_paisesdelmundo.data.room.CountryState
+import com.example.practica5_paisesdelmundo.data.room.events.CountryEvent
+import com.example.practica5_paisesdelmundo.data.room.sorts.CountrySortType
 import com.example.practica5_paisesdelmundo.navegacion.Screen
 
 
@@ -45,7 +53,9 @@ import com.example.practica5_paisesdelmundo.navegacion.Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountriesScreen(
-    navController: NavController
+    navController: NavController,
+    state: CountryState,
+    onEvent: (CountryEvent) -> Unit
 ) {
     Scaffold(
         topBar = { CountryAppBar(navController) },
@@ -70,7 +80,7 @@ fun CountriesScreen(
                     alpha = .1f,
                     contentScale = ContentScale.Crop
                 )
-                CountryContent(navController)
+                CountryContent(navController, state, onEvent)
             }
 
         })
@@ -104,15 +114,16 @@ fun CountryAppBar(navController: NavController) {
 
 @Composable
 fun CountryContent(
-    navController: NavController
+    navController: NavController,
+    state: CountryState,
+    onEvent: (CountryEvent) -> Unit
 ) {
 
-    var list = listOf<String>("Mexico", "Estados Unidos", "Colombia", "Alaska")
+    //var list = listOf<String>("Mexico", "Estados Unidos", "Colombia", "Alaska")
 
     Box(
         modifier = Modifier.fillMaxSize(),
         //contentAlignment = Alignment.TopCenter,
-
     ) {
         Column(
             modifier = Modifier
@@ -122,6 +133,8 @@ fun CountryContent(
             verticalArrangement = Arrangement.Top
 
         ) {
+            FilterOptions(state = state, onEvent = onEvent)
+
             Text(
                 text = "Países del Mundo",
                 fontSize = 30.sp,
@@ -135,7 +148,7 @@ fun CountryContent(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(list) { country ->
+                items(state.countries) { country ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -146,12 +159,12 @@ fun CountryContent(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = country,
+                                text = "${country.countryName}, ${country.countryContinent}",
                                 modifier = Modifier.padding(start = 10.dp)
                             )
                         }
                         IconButton(onClick = {
-                            //onEvent(CountryEvent.DeleteCountry(country))
+                            onEvent(CountryEvent.DeleteCountry(country))
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
@@ -165,38 +178,36 @@ fun CountryContent(
     }
 }
 
-/**
- *  Box(
-modifier = Modifier
-.fillMaxSize()
-.padding(top = 5.dp),
-contentAlignment = Alignment.TopCenter
-//horizontalAlignment = Alignment.CenterHorizontally,
-//verticalArrangement = Arrangement.Center
-) {
-Text(
-text = "Países",
-fontSize = 50.sp,
-fontWeight = FontWeight.ExtraBold,
-textAlign = TextAlign.Center,
-color = MaterialTheme.colorScheme.onSurface,
-//modifier = Modifier.padding(vertical = 10.dp)
-)
-/*
-LazyColumn(
-modifier = Modifier
-.fillMaxWidth(),
-horizontalAlignment = Alignment.CenterHorizontally,
-verticalArrangement = Arrangement.SpaceEvenly
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterOptions(
+    state: CountryState,
+    onEvent: (CountryEvent) -> Unit
 ) {
 
-Button(
-onClick = {
-navController.navigate(route = Screen.AddCity.route)
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .height(35.dp)
+    ) {
+        CountrySortType.values().forEach { countrySortType ->
+            FilterChip(
+                modifier = Modifier.padding(end = 8.dp),
+                selected = state.sortType == countrySortType,
+                onClick = { onEvent(CountryEvent.SortCountries(countrySortType)) },
+                label = { Text(text = countrySortType.name) },
+                leadingIcon = if (state.sortType == countrySortType) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = null,
+                            modifier = Modifier.size(10.dp)
+                        )
+                    }
+                } else {
+                    null
+                },
+            )
+        }
+    }
 }
-) {
-Text(text = "Puntos Turísticos", fontSize = 25.sp)
-}
-}*/
- */
