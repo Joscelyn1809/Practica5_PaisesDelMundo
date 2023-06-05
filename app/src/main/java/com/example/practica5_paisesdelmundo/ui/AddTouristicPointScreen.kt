@@ -138,7 +138,7 @@ fun AddTouristicPointContent(
 
         ) {
             Text(
-                text = "Añadiendo Ciudad",
+                text = "Añadiendo Punto",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,

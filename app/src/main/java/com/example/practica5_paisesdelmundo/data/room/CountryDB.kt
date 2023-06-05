@@ -19,7 +19,7 @@ import com.example.practica5_paisesdelmundo.data.room.models.TouristicPoint
         City::class,
         CountryLanguage::class,
         TouristicPoint::class,
-        PositionGps::class
+        PositionGps::class,
     ], // CountryLanguageRegistry::class
     version = 1,
     exportSchema = false

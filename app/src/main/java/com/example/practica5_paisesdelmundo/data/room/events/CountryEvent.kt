@@ -9,5 +9,4 @@ sealed interface CountryEvent {
     data class SetCountryContinent(val countryContinent: String) : CountryEvent
     data class SortCountries(val sortType: CountrySortType) : CountryEvent
     data class DeleteCountry(val country: Country) : CountryEvent
-    //data class GetLanguagesOfCountry(val countryId: Int) : CountryEvent
 }

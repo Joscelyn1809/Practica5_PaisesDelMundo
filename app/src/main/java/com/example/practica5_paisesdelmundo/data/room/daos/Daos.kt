@@ -30,6 +30,10 @@ interface CountryDao {
 
     @Query("SELECT * FROM COUNTRY_TABLE WHERE countryId =:id")
     fun getCountry(id: Int): Flow<Country>
+
+    /* @Transaction
+     @Query("SELECT * FROM COUNTRY_TABLE")
+     fun getCountriesAndCities():Flow<List<CountryAndCity>>*/
 }
 
 @Dao
@@ -49,6 +53,15 @@ interface CountryLanguageDao {
     @Query("SELECT * FROM LANGUAGE_TABLE WHERE languageId =:id")
     fun getLanguage(id: Int): Flow<CountryLanguage>
 }
+
+/*data class CountryAndCity(
+    @Embedded val country: Country,
+    @Relation(
+        parentColumn = "countryId",
+        entityColumn = "countryIdFk"
+    )
+    val city: City
+)*/
 
 @Dao
 interface CityDao {
